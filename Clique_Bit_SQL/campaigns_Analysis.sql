@@ -187,8 +187,9 @@ on cte1.dummy_col = cte2.dummy_col;
 
 
 
+create temporary table t1 as
 select 
-'users clicked on impression' as `Description `,
+'users clicked on impression' as `Description`,
 case when  impression then 'Recevied' else 'Not Recevied' end as Impression,
 case when  click then 'clicked' else 'not clicked' end as clicked,
 (sum(purchase)/count(visit_id))*100 as `purchase_rate`
@@ -203,6 +204,7 @@ case when  click then 'clicked' else 'not clicked' end as clicked,
 from clique_bait_reporting.campaigns_analysis
 where impression= 0 and click =0;
 
+select * from t1;
 
 /**
 ===========================================================================
@@ -211,8 +213,9 @@ where impression= 0 and click =0;
 
 */
 
+create temporary table t2 as
 select 
-	'users clicked on impression' as `Description `,
+	'users clicked on impression' as `Description`,
 	case when  impression then 'Recevied' else 'Not Recevied' end as Impression,
 	case when  click then 'clicked' else 'not clicked' end as clicked,
 	(sum(purchase)/count(visit_id))*100 as `purchase_rate`
@@ -227,6 +230,12 @@ select
 from clique_bait_reporting.campaigns_analysis
 where impression= 1 and click =0;
 
+select * from t2;
+
+create table  clique_bait_reporting.impressionImpact as 
+select * from t1
+union 
+select * from t2;
 -- =======================================================================================================================
 
 
@@ -236,7 +245,7 @@ where impression= 1 and click =0;
 */
 
 
-
+create table clique_bait_reporting.campaign_details as 
 select 
 	campaign_name,
 	count( distinct user_id) as `total_users`,
@@ -248,7 +257,7 @@ from  clique_bait_reporting.campaigns_analysis
 group by campaign_name;
 
 
-
+select * from  clique_bait_reporting.campaign_details;
 
 -- =========================================================================================================================
 
